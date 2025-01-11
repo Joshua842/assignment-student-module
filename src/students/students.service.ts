@@ -133,4 +133,21 @@ export class StudentsService {
     return await this.studentsRepository.save(student);
   }
 
+  async remove(id: number) {
+    const student = await this.findOne(id);
+  
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+  
+    // Remove the student from the database
+    await this.studentsRepository.remove(student);
+  
+    // Return a success message along with the deleted student data
+    return {
+      message: `Successfully deleted student with ID ${id}`,
+      deletedStudent: student,  // Include the deleted student data
+    };
+
+  }
 }

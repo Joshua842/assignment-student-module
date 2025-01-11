@@ -50,4 +50,8 @@ export class StudentsController {
     }
   }
 
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.studentsService.remove(+id);
+  }
 }
