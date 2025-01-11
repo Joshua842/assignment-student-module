@@ -72,4 +72,34 @@ export class StudentsService {
     }
   }
 
+  async findAll() {
+    const students = await this.studentsRepository.find();
+  
+    if (students.length === 0) {
+      // If no data is found, throw an HTTP exception with a custom message
+      throw new HttpException(
+        'No data available',
+        HttpStatus.NOT_FOUND, // 404 status code for "Not Found"
+      );
+    }
+  
+    return students;
+  }
+  
+  async findOne(id: number) {
+    const student = await this.studentsRepository.findOne({
+      where: { id },
+    });
+  
+    if (!student) {
+      // If no student is found with the given ID, throw an exception
+      throw new HttpException(
+        `Student with ID ${id} not found`,
+        HttpStatus.NOT_FOUND, // 404 status code for "Not Found"
+      );
+    }
+  
+    return student;
+  }
+
 }
