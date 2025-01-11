@@ -3,6 +3,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { Repository } from 'typeorm';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -100,6 +101,36 @@ export class StudentsService {
     }
   
     return student;
+  }
+
+  // Full update with PUT: Replaces all fields, including setting omitted ones to null
+  async update(id: number, updateStudentDto: UpdateStudentDto) {
+    const student = await this.studentsRepository.findOne({ where: { id } });
+
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+
+    // For PUT: Replace the entire student, even if some fields are omitted
+    student.firstName = updateStudentDto.firstName ?? null;
+    student.lastName = updateStudentDto.lastName ?? null;
+    student.email = updateStudentDto.email ?? null;
+
+    return await this.studentsRepository.save(student);
+  }
+
+  // Partial update with PATCH: Updates only provided fields
+  async patch(id: number, updateStudentDto: UpdateStudentDto) {
+    const student = await this.studentsRepository.findOne({ where: { id } });
+
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+
+    // For PATCH: Only update the fields provided in the request
+    Object.assign(student, updateStudentDto);
+
+    return await this.studentsRepository.save(student);
   }
 
 }
