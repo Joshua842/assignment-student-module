@@ -11,4 +11,14 @@ export class StudentsController {
     return this.studentsService.create(createStudentDto);
   }
 
+  @Get()
+  findAll() {
+    return this.studentsService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.studentsService.findOne(+id);
+  }
+
 }
